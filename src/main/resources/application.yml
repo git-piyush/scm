@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: scm2.0
+  datasource:
+    url: jdbc:postgresql://${MYSQL_HOST:localhost}:${MYSQL_PORT:5432}/${MYSQL_DB:scm2}
+    username: ${MYSQL_USER:postgres}
+    password: ${MYSQL_PASSWORD:root}
+  #jpa configurations
+  jpa:
+    show-sql: ${SHOW_SQL:true}
+  #for creating schemas and tables
+    hibernate:
+      ddl-auto: ${DDL_AUTO:update}
+  servlet:
+    multipart:
+      max-file-size: ${MAX_FILE_SIZE:10MB}
+      max-request-size: ${MAX_REQUEST_SIZE:10MB}
+  profiles:
+    active: ${ACTIVE_PROFILE:dev}
+server:
+  baseUrl: ${BASE_URL:http://localhost:8081}
+  port: ${SERVER_PORT:8081}
