@@ -1,5 +1,6 @@
 package com.scm.controllers;
 
+import com.scm.services.ContactService;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -19,6 +20,9 @@ public class RootController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private ContactService contactService;
+
     @ModelAttribute
     public void addLoggedInUserInformation(Model model, Authentication authentication) {
         if (authentication == null) {
@@ -30,9 +34,10 @@ public class RootController {
         logger.info("User logged in: {}", username);
         // database se data ko fetch : get user from db :
         User user = userService.getUserByEmail(username);
-        System.out.println(user);
         System.out.println(user.getName());
         System.out.println(user.getEmail());
+        Integer totalContacts = contactService.getAll().size();
+        model.addAttribute("totalContacts", totalContacts);
         model.addAttribute("loggedInUser", user);
 
     }

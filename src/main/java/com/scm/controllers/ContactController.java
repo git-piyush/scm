@@ -1,6 +1,8 @@
 package com.scm.controllers;
 
 import java.util.*;
+
+import com.scm.helpers.*;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -8,21 +10,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import com.scm.entities.Contact;
 import com.scm.entities.User;
 import com.scm.forms.ContactForm;
 import com.scm.forms.ContactSearchForm;
-import com.scm.helpers.AppConstants;
-import com.scm.helpers.Helper;
-import com.scm.helpers.Message;
-import com.scm.helpers.MessageType;
 import com.scm.services.ContactService;
 import com.scm.services.ImageService;
 import com.scm.services.UserService;
@@ -44,6 +37,11 @@ public class ContactController {
 
     @Autowired
     private UserService userService;
+
+    private boolean saveImageInCloudanary = false;
+
+    @Autowired
+    private ImageSaveHandler imageSaveHandler;
 
     @RequestMapping("/add")
     // add contact page: handler
@@ -94,11 +92,21 @@ public class ContactController {
         contact.setLinkedInLink(contactForm.getLinkedInLink());
         contact.setWebsiteLink(contactForm.getWebsiteLink());
 
-        if (contactForm.getContactImage() != null && !contactForm.getContactImage().isEmpty()) {
+        if(saveImageInCloudanary){
+            if (contactForm.getContactImage() != null && !contactForm.getContactImage().isEmpty()) {
+                String filename = UUID.randomUUID().toString();
+                String fileURL = imageService.uploadImage(contactForm.getContactImage(), filename);
+                contact.setPicture(fileURL);
+                contact.setCloudinaryImagePublicId(filename);
+            }
+        }else{
             String filename = UUID.randomUUID().toString();
-            String fileURL = imageService.uploadImage(contactForm.getContactImage(), filename);
-            contact.setPicture(fileURL);
+            String fileURL = imageSaveHandler.saveFile(contactForm.getContactImage(),contact,filename);
+            String temp = fileURL;
+            contact.setPicture(temp);
             contact.setCloudinaryImagePublicId(filename);
+            int index = fileURL.indexOf("static");
+            contact.setPictureAccessURL(fileURL);
 
         }
         contactService.save(contact);
@@ -252,12 +260,22 @@ public class ContactController {
 
         if (contactForm.getContactImage() != null && !contactForm.getContactImage().isEmpty()) {
             logger.info("file is not empty");
-            String fileName = UUID.randomUUID().toString();
-            String imageUrl = imageService.uploadImage(contactForm.getContactImage(), fileName);
-            con.setCloudinaryImagePublicId(fileName);
-            con.setPicture(imageUrl);
-            contactForm.setPicture(imageUrl);
 
+            if(saveImageInCloudanary){
+                String fileName = UUID.randomUUID().toString();
+                String imageUrl = imageService.uploadImage(contactForm.getContactImage(), fileName);
+                con.setCloudinaryImagePublicId(fileName);
+                con.setPicture(imageUrl);
+                contactForm.setPicture(imageUrl);
+            }else{
+                String filename = UUID.randomUUID().toString();
+                String fileURL = imageSaveHandler.saveFile(contactForm.getContactImage(),con,filename);
+                String temp = fileURL;
+                con.setPicture(temp);
+                con.setCloudinaryImagePublicId(filename);
+                int index = fileURL.indexOf("static");
+                con.setPictureAccessURL(fileURL);
+            }
         } else {
             logger.info("file is empty");
         }
@@ -268,6 +286,12 @@ public class ContactController {
         model.addAttribute("message", Message.builder().content("Contact Updated !!").type(MessageType.green).build());
 
         return "redirect:/user/contacts/view/" + contactId;
+    }
+
+    @ModelAttribute
+    public String test(Model model){
+        System.out.println("Test1");
+        return "Test";
     }
 
 }

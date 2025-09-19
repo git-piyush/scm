@@ -19,11 +19,15 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    private Integer totalContacts=0;
+
     // user dashbaord page
 
     @RequestMapping(value = "/dashboard")
-    public String userDashboard() {
+    public String userDashboard(Model model) {
         System.out.println("User dashboard");
+        int totalContacts = 90;
+        model.addAttribute("totalContacts", totalContacts);
         return "user/dashboard";
     }
 
@@ -42,5 +46,13 @@ public class UserController {
     // user edit contact
 
     // user delete contact
+
+    public Integer getTotalContacts() {
+        return totalContacts;
+    }
+
+    public void setTotalContacts(Integer totalContacts) {
+        this.totalContacts = totalContacts;
+    }
 
 }
