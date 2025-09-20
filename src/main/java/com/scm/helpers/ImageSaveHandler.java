@@ -28,15 +28,15 @@ public class ImageSaveHandler {
 
     public String saveFile(
             @Nonnull MultipartFile sourceFile,
-            @Nonnull Contact contact,
+            @Nonnull String email,@Nonnull String id,
             @Nonnull String filename
     ) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = Helper.getEmailOfLoggedInUser(authentication);
 
-        String[] userEmail = contact.getEmail().split("@");
+        String[] userEmail = email.split("@");
         final String fileUploadSubPath = username;
-        return uploadFile(sourceFile, fileUploadSubPath,contact.getId(), filename);
+        return uploadFile(sourceFile, fileUploadSubPath,id, filename);
     }
 
     private String uploadFile(

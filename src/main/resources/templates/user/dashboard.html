@@ -7,6 +7,9 @@
     <title data-th-text="${loggedInUser.name}+' |  Dashboard'">
       Profile Page
     </title>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   </head>
   <body>
     <div id="content">
@@ -26,6 +29,50 @@
             Consequatur, ratione!
           </p>
         </div>
+        <div class="bg-gray-100 min-h-screen p-6">
+
+        <!-- Header -->
+        <header class="mb-6">
+          <h1 class="text-2xl font-bold text-gray-800">Dashboard</h1>
+          <p class="text-gray-500">Welcome back, <span th:text="${username}">User</span></p>
+        </header>
+
+        <!-- Grid of tiles -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+          <!-- Users tile -->
+          <div class="bg-white rounded-2xl shadow p-6 flex flex-col justify-between">
+            <h2 class="text-lg font-semibold text-gray-700 mb-2">Total Users</h2>
+            <p class="text-3xl font-bold text-blue-600" th:text="${totalUsers}">150</p>
+            <span class="text-sm text-gray-400 mt-2">Active this month</span>
+          </div>
+
+          <!-- Orders tile -->
+          <div class="bg-white rounded-2xl shadow p-6 flex flex-col justify-between">
+            <h2 class="text-lg font-semibold text-gray-700 mb-2">Orders</h2>
+            <p class="text-3xl font-bold text-green-600" th:text="${totalOrders}">320</p>
+            <span class="text-sm text-gray-400 mt-2">Completed successfully</span>
+          </div>
+
+          <!-- Revenue tile -->
+          <div class="bg-white rounded-2xl shadow p-6 flex flex-col justify-between">
+            <h2 class="text-lg font-semibold text-gray-700 mb-2">Revenue</h2>
+            <p class="text-3xl font-bold text-yellow-600" th:text="${totalRevenue}">$25,000</p>
+            <span class="text-sm text-gray-400 mt-2">This quarter</span>
+          </div>
+
+          <!-- Custom tile -->
+          <div class="bg-white rounded-2xl shadow p-6 flex flex-col justify-between">
+            <h2 class="text-lg font-semibold text-gray-700 mb-2">New Messages</h2>
+            <p class="text-3xl font-bold text-purple-600" th:text="${newMessages}">42</p>
+            <span class="text-sm text-gray-400 mt-2">Unread messages</span>
+          </div>
+
+        </div>
+
+        </div>
+
+
       </div>
     </div>
 

@@ -5,6 +5,7 @@ import java.util.*;
 import com.scm.helpers.*;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -38,7 +39,8 @@ public class ContactController {
     @Autowired
     private UserService userService;
 
-    private boolean saveImageInCloudanary = false;
+    @Value("${spring.mail.properties.saveImageInCloudanary}")
+    private boolean saveImageInCloudanary;
 
     @Autowired
     private ImageSaveHandler imageSaveHandler;
@@ -101,13 +103,12 @@ public class ContactController {
             }
         }else{
             String filename = UUID.randomUUID().toString();
-            String fileURL = imageSaveHandler.saveFile(contactForm.getContactImage(),contact,filename);
+            String fileURL = imageSaveHandler.saveFile(contactForm.getContactImage(),contact.getEmail(),contact.getId(),filename);
             String temp = fileURL;
             contact.setPicture(temp);
             contact.setCloudinaryImagePublicId(filename);
             int index = fileURL.indexOf("static");
             contact.setPictureAccessURL(fileURL);
-
         }
         contactService.save(contact);
         System.out.println(contactForm);
@@ -269,7 +270,7 @@ public class ContactController {
                 contactForm.setPicture(imageUrl);
             }else{
                 String filename = UUID.randomUUID().toString();
-                String fileURL = imageSaveHandler.saveFile(contactForm.getContactImage(),con,filename);
+                String fileURL = imageSaveHandler.saveFile(contactForm.getContactImage(),con.getEmail(),con.getId(),filename);
                 String temp = fileURL;
                 con.setPicture(temp);
                 con.setCloudinaryImagePublicId(filename);
