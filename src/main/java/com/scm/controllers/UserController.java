@@ -50,7 +50,7 @@ public class UserController {
     public String userDashboard(Model model) {
         System.out.println("User dashboard");
         model.addAttribute("username", "Piyush"); // logged in user
-        model.addAttribute("totalUsers", 150);
+        model.addAttribute("totalUsers", 151);
         model.addAttribute("totalOrders", 320);
         model.addAttribute("totalRevenue", "$25,000");
         model.addAttribute("newMessages", 42);

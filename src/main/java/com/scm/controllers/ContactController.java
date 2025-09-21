@@ -1,12 +1,17 @@
 package com.scm.controllers;
 
+import java.io.File;
 import java.util.*;
 
 import com.scm.helpers.*;
 import org.slf4j.Logger;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,6 +28,7 @@ import com.scm.services.UserService;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RequestMapping("/user/contacts")
@@ -41,6 +47,9 @@ public class ContactController {
 
     @Value("${spring.mail.properties.saveImageInCloudanary}")
     private boolean saveImageInCloudanary;
+
+    @Value("${application.contact.createtemplatepath}")
+    private String createtemplatepath;
 
     @Autowired
     private ImageSaveHandler imageSaveHandler;
@@ -293,6 +302,28 @@ public class ContactController {
     public String test(Model model){
         System.out.println("Test1");
         return "Test";
+    }
+
+    @PostMapping("/upload-contact-create-excel")
+    public String uploadcontactcreateexcel(@RequestParam("file") MultipartFile file, Model model){
+        System.out.println("Test1");
+        return "Test";
+    }
+
+    @GetMapping("/download-template")
+    public ResponseEntity<Resource> downloadtemplate(Model model){
+        // Path of your template file on server (adjust path as needed)
+        String downLoadPath = createtemplatepath+"/contact-create-template.xlsx";
+        File file = new File(downLoadPath);
+        if (!file.exists()) {
+            throw new RuntimeException("Template file not found!");
+        }
+
+        Resource resource = new FileSystemResource(file);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=template.xlsx")
+                .body(resource);
     }
 
 }

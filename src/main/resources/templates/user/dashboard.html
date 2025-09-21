@@ -42,30 +42,30 @@
 
           <!-- Users tile -->
           <div class="bg-white rounded-2xl shadow p-6 flex flex-col justify-between">
-            <h2 class="text-lg font-semibold text-gray-700 mb-2">Total Users</h2>
+            <h2 class="text-lg font-semibold text-gray-700 mb-2">Your Total Contacts</h2>
             <p class="text-3xl font-bold text-blue-600" th:text="${totalUsers}">150</p>
             <span class="text-sm text-gray-400 mt-2">Active this month</span>
           </div>
 
           <!-- Orders tile -->
           <div class="bg-white rounded-2xl shadow p-6 flex flex-col justify-between">
-            <h2 class="text-lg font-semibold text-gray-700 mb-2">Orders</h2>
+            <h2 class="text-lg font-semibold text-gray-700 mb-2">Messages</h2>
             <p class="text-3xl font-bold text-green-600" th:text="${totalOrders}">320</p>
-            <span class="text-sm text-gray-400 mt-2">Completed successfully</span>
+            <span class="text-sm text-gray-400 mt-2">Unread messages.</span>
           </div>
 
           <!-- Revenue tile -->
           <div class="bg-white rounded-2xl shadow p-6 flex flex-col justify-between">
-            <h2 class="text-lg font-semibold text-gray-700 mb-2">Revenue</h2>
+            <h2 class="text-lg font-semibold text-gray-700 mb-2">Reminders For Today</h2>
             <p class="text-3xl font-bold text-yellow-600" th:text="${totalRevenue}">$25,000</p>
-            <span class="text-sm text-gray-400 mt-2">This quarter</span>
+            <span class="text-sm text-gray-400 mt-2"><a class="underline text-blue-600" data-th-href="www.google.com">Schedule New</a></span>
           </div>
 
           <!-- Custom tile -->
           <div class="bg-white rounded-2xl shadow p-6 flex flex-col justify-between">
-            <h2 class="text-lg font-semibold text-gray-700 mb-2">New Messages</h2>
+            <h2 class="text-lg font-semibold text-gray-700 mb-2">Favourite Contacts</h2>
             <p class="text-3xl font-bold text-purple-600" th:text="${newMessages}">42</p>
-            <span class="text-sm text-gray-400 mt-2">Unread messages</span>
+            <span class="text-sm text-gray-400 mt-2"><a class="underline text-blue-600" data-th-href="www.google.com">View</a></span>
           </div>
 
         </div>
