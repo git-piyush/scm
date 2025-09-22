@@ -28,14 +28,17 @@
                 <h2 class="text-xl font-bold mb-4">Upload Excel File (.xlsx)</h2>
 
                 <!-- Form -->
-                <form th:action="@{/user/contacts/upload-contact-create-excel}" method="post" enctype="multipart/form-data" class="space-y-4">
+                <form th:action="@{/user/contacts/upload-contact-create-excel}"
+                      method="post"
+                      enctype="multipart/form-data"
+                      class="space-y-4">
 
 
                   <div style="display: flex; align-items: center; gap: 10px; border: 1px solid #d1d5db; border-radius: 8px; padding: 10px; background: #f9fafb;">
 
                     <label for="file" class="font-medium text-gray-700"></label>
 
-                    <input type="file" id="file" name="file" accept=".xlsx" required
+                    <input type="file" id="file" name="file" accept=".csv" required
                            style="padding: 4px; flex: 1;" class="font-medium text-gray-700">
                   </div>
                   <!-- Submit button -->

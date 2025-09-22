@@ -28,7 +28,7 @@ public class ContactForm {
     private String email;
 
     @NotBlank(message = "Phone Number is required")
-    @Pattern(regexp = "^[0-9]{10}$", message = "Invalid Phone Number")
+    //@Pattern(regexp = "^[0-9]{5}$", message = "Invalid Phone Number")
     private String phoneNumber;
 
     @NotBlank(message = "Address is required")

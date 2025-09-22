@@ -1,10 +1,19 @@
 package com.scm.controllers;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 
 import com.scm.helpers.*;
+import com.scm.utility.SequenceService;
 import org.slf4j.Logger;
+import org.springframework.batch.core.*;
+import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +45,9 @@ public class ContactController {
 
     private Logger logger = org.slf4j.LoggerFactory.getLogger(ContactController.class);
 
+    private final JobLauncher jobLauncher;
+    private final Job importContactJob;
+
     @Autowired
     private ContactService contactService;
 
@@ -51,8 +63,22 @@ public class ContactController {
     @Value("${application.contact.createtemplatepath}")
     private String createtemplatepath;
 
+    @Value("${application.contactcreate.temp-path}")
+    private String contactUploadTempPath;
+
     @Autowired
     private ImageSaveHandler imageSaveHandler;
+
+    @Autowired
+    private Job job;
+
+    @Autowired
+    private SequenceService sequenceService;
+
+    public ContactController(JobLauncher jobLauncher, Job importContactJob) {
+        this.jobLauncher = jobLauncher;
+        this.importContactJob = importContactJob;
+    }
 
     @RequestMapping("/add")
     // add contact page: handler
@@ -305,15 +331,29 @@ public class ContactController {
     }
 
     @PostMapping("/upload-contact-create-excel")
-    public String uploadcontactcreateexcel(@RequestParam("file") MultipartFile file, Model model){
-        System.out.println("Test1");
-        return "Test";
+    public String uploadcontactcreateexcel(@RequestParam("file") MultipartFile file, Model model)  throws Exception {
+
+        Long seq = sequenceService.getNextVal("report_seq");
+
+        Path filePath = Path.of(contactUploadTempPath+"/userdata_"+seq+".csv");
+        //Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+
+        // Pass file path to job as parameter
+        JobParameters params = new JobParametersBuilder()
+                .addString("filePath", contactUploadTempPath+"/userdata_"+seq+".csv")
+                .addLong("time", System.currentTimeMillis())
+                .toJobParameters();
+        jobLauncher.run(importContactJob, params);
+        System.out.println("Success");
+        return "redirect:/user/contacts";
     }
 
     @GetMapping("/download-template")
     public ResponseEntity<Resource> downloadtemplate(Model model){
         // Path of your template file on server (adjust path as needed)
-        String downLoadPath = createtemplatepath+"/contact-create-template.xlsx";
+        String downLoadPath = createtemplatepath+"/contact-create-template.csv";
         File file = new File(downLoadPath);
         if (!file.exists()) {
             throw new RuntimeException("Template file not found!");
@@ -322,8 +362,17 @@ public class ContactController {
         Resource resource = new FileSystemResource(file);
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=template.xlsx")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=template.csv")
                 .body(resource);
+    }
+
+    @GetMapping("/batch/start")
+    public String startBatch() throws Exception {
+        JobParameters params = new JobParametersBuilder()
+                .addLong("time", System.currentTimeMillis()) // unique run
+                .toJobParameters();
+        jobLauncher.run(importContactJob, params);
+        return "Batch job started!";
     }
 
 }
