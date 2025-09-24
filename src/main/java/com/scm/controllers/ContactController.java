@@ -6,7 +6,9 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
 
+import com.scm.forms.MailForm;
 import com.scm.helpers.*;
+import com.scm.services.EmailService;
 import com.scm.utility.SequenceService;
 import org.slf4j.Logger;
 import org.springframework.batch.core.*;
@@ -74,6 +76,9 @@ public class ContactController {
 
     @Autowired
     private SequenceService sequenceService;
+
+    @Autowired
+    private EmailService emailService;
 
     public ContactController(JobLauncher jobLauncher, Job importContactJob) {
         this.jobLauncher = jobLauncher;
@@ -263,7 +268,6 @@ public class ContactController {
         contactForm.setWebsiteLink(contact.getWebsiteLink());
         contactForm.setLinkedInLink(contact.getLinkedInLink());
         contactForm.setPicture(contact.getPicture());
-        ;
         model.addAttribute("contactForm", contactForm);
         model.addAttribute("contactId", contactId);
 
@@ -366,13 +370,33 @@ public class ContactController {
                 .body(resource);
     }
 
-    @GetMapping("/batch/start")
-    public String startBatch() throws Exception {
-        JobParameters params = new JobParametersBuilder()
-                .addLong("time", System.currentTimeMillis()) // unique run
-                .toJobParameters();
-        jobLauncher.run(importContactJob, params);
-        return "Batch job started!";
+    @GetMapping("/mailform/{contactId}")
+    public String mailForm(@PathVariable("contactId") String contactId,
+                           Model model){
+
+        var contact = contactService.getById(contactId);
+        MailForm mailForm = new MailForm();
+        if(contact.getEmail()!=null){
+            mailForm.setToMail(contact.getEmail());
+        }
+        model.addAttribute("mailForm", mailForm);
+        model.addAttribute("contactId", contactId);
+        return "user/mail_form";
+    }
+
+
+    @PostMapping("/sendmail/{contactId}")
+    public String sendmail(@PathVariable("contactId") String contactId,
+                           @Valid @ModelAttribute MailForm mailForm,
+                           Model model, HttpSession session){
+        emailService.sendEmail(mailForm.getToMail(), mailForm.getSubject(), mailForm.getMessage());
+        System.out.println("mail sent");
+        session.setAttribute("message",
+                Message.builder()
+                        .content("Mail sent successfully!")
+                        .type(MessageType.green)
+                        .build());
+        return "user/mail_form";
     }
 
 }

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en"
+      th:replace="~{base :: parent(~{::#content},~{::title},~{::script})}"
+      xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Title</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body>
+    <div id="content">
+        <div th:if="${loggedInUser}">
+            <div data-th-replace="~{user/sidebar :: sidebar}"></div>
+        </div>
+        <div class="sm:pl-64 pt-20" style="height: 1000px">
+            <div class="grid grid-cols-12">
+                <div class="col-span-3"></div>
+                <div class="col-span-12 md:col-span-6">
+                    <div class="card block p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+                        <div data-th-replace="message::messagebox"></div>
+                        <div>
+                            <form data-th-action="@{'/user/contacts/sendmail/' + ${contactId}}"
+                                  data-th-object="${mailForm}"
+                                  method="post"
+                                  enctype="multipart/form-data"
+                                  class="mt-4 space-y-3">
+                                <label class="block">
+                                    <span class="text-sm">To</span>
+                                    <input data-th-field="*{toMail}"
+                                            type="email"
+                                           placeholder="recipient@example.com"
+                                           required
+                                           readonly
+                                           class="mt-1 block w-full rounded-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+                                </label>
+                                <label class="block">
+                                    <span class="text-sm">Subject</span>
+                                    <input
+                                            data-th-field="*{subject}"
+                                           type="text"
+                                           placeholder="Subject"
+                                           class="mt-1 block w-full rounded-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+                                </label>
+
+                                <label class="block">
+                                    <span class="text-sm">Message</span>
+                                    <textarea
+                                            data-th-field="*{message}"
+                                            rows="5"
+                                            placeholder="Write your message..."
+                                            class="mt-1 block w-full rounded-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-300"></textarea>
+                                </label>
+
+                                <div class="flex items-center justify-between pt-2">
+                                    <div class="text-xs text-gray-500 dark:text-gray-400">You can attach files later</div>
+                                    <div class="flex items-center gap-2">
+                                        <button type="button" id="cancelBtn" class="px-3 py-1 rounded-md text-sm border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none">Cancel</button>
+                                        <button type="submit" class="px-4 py-2 rounded-md bg-indigo-600 text-white text-sm hover:bg-indigo-500 focus:outline-none">Send</button>
+                                    </div>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script data-th-src="@{'/js/admin.js'}"></script>
+    <script>
+        console.log("this is profile page");
+    </script>
+
+</body>
+</html>

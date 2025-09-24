@@ -183,6 +183,11 @@
                         <button th:onclick="loadContactdata([[${c.id}]])">
                           <i class="fa-solid fa-eye"></i>
                         </button>
+
+                        <!-- open mailform -->
+                        <a data-th-href="@{'/user/contacts/mailform/'+*{id}}">
+                          <i class="fa-solid fa-envelope"></i>
+                        </a>
                       </div>
                     </td>
                   </tr>

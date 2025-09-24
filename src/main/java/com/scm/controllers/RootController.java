@@ -12,6 +12,8 @@ import com.scm.entities.User;
 import com.scm.helpers.Helper;
 import com.scm.services.UserService;
 
+import java.util.stream.Collectors;
+
 @ControllerAdvice
 public class RootController {
 
@@ -36,7 +38,7 @@ public class RootController {
         User user = userService.getUserByEmail(username);
         System.out.println(user.getName());
         System.out.println(user.getEmail());
-        Integer totalContacts = contactService.getAll().size();
+        Integer totalContacts = contactService.getAll().stream().filter(c->c.getUser().getUserId().equalsIgnoreCase(user.getUserId())).collect(Collectors.toList()).size();
         model.addAttribute("totalContacts", totalContacts);
         model.addAttribute("loggedInUser", user);
 
