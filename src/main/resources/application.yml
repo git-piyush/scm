@@ -2,9 +2,9 @@ spring:
   application:
     name: scm2.0
   datasource:
-    url: jdbc:postgresql://${MYSQL_HOST:localhost}:${MYSQL_PORT:5432}/${MYSQL_DB:scm2}
-    username: ${MYSQL_USER:postgres}
-    password: ${MYSQL_PASSWORD:root}
+    url: ${DATASOURCE_URL}
+    username: ${DATASOURCE_USER}
+    password: ${DATASOURCE_PASSWORD}
   #jpa configurations
   jpa:
     show-sql: ${SHOW_SQL:true}
@@ -18,5 +18,5 @@ spring:
   profiles:
     active: ${ACTIVE_PROFILE:dev}
 server:
-  baseUrl: ${BASE_URL:http://localhost:8081}
+  baseUrl: ${BASE_URL}
   port: ${SERVER_PORT:8081}

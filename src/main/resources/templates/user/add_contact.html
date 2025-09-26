@@ -25,7 +25,7 @@
             >
               <div data-th-replace="message::messagebox"></div>
               <div class="max-w-lg mx-auto bg-white p-6 rounded-lg shadow">
-                <h2 class="text-xl font-bold mb-4">Upload Excel File (.xlsx)</h2>
+                <h2 class="text-xl font-bold mb-4">Upload Excel File (.csv)</h2>
 
                 <!-- Form -->
                 <form th:action="@{/user/contacts/upload-contact-create-excel}"
@@ -56,7 +56,7 @@
                 <!-- Download Template button -->
                 <a th:href="@{/user/contacts/download-template}"
                    class="block text-center bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">
-                  Download Template (.xlsx)
+                  Download Template (.csv)
                 </a>
                 <!-- Display message if available -->
                 <p th:text="${message}" class="mt-4 text-gray-700"></p>

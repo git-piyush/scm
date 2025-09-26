@@ -11,10 +11,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Getter
@@ -45,4 +42,11 @@ public class Contact {
     @OneToMany(mappedBy = "contact", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<SocialLink> links = new ArrayList<>();
 
+    public Contact(String name, String email, String address, String websiteLink, String picture) {
+        this.name = name;
+        this.email = email;
+        this.address = address;
+        this.picture = picture;
+        this.websiteLink = websiteLink;
+    }
 }

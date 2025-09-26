@@ -206,7 +206,9 @@ public class ContactController {
             Authentication authentication) {
 
         logger.info("field {} keyword {}", contactSearchForm.getField(), contactSearchForm.getValue());
-
+        if(contactSearchForm.getField() == null || contactSearchForm.getField().isEmpty()){
+            contactSearchForm.setField("name");
+        }
         var user = userService.getUserByEmail(Helper.getEmailOfLoggedInUser(authentication));
 
         Page<Contact> pageContact = null;
